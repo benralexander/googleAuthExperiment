@@ -140,20 +140,31 @@ oauth {
     providers {
 
         google {
-            //api = org.scribe.builder.api.GoogleApi
             api = org.grails.plugin.springsecurity.oauth.GoogleApi20
             key = '975413760331-d2nr5vq7sbbppjfog0cp9j4agesbeovt.apps.googleusercontent.com'
             secret = 'HKIxi3AOLAgyFV6lDJQCfEgY'
-           // successUri = '/oauth/google/success'
             successUri = "${baseURL}/springSecurityOAuth/onSuccess"
             failureUri = '/oauth/google/error'
             callback = "${baseURL}/springSecurityOAuth/codeExchange?provider=google"
-//            callback = "${baseURL}/springSecurityOAuth/onSuccess?provider=google"
             scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
         }
 
     }
 }
+auth {
+
+    providers {
+
+        twitter {
+            key = 'mAbvjXZycxMSBCXQUYttdFm5L'
+            secret = 'l3dJBs3w9QraAuivcfaqdjVGkJ4cxQSMMNNkZ6v9bwz8nXBCXQ'
+            callback = "${baseURL}/springSecurityOAuth/oauthInit"
+        }
+
+    }
+}
+
+
 googleapi {
      baseUrl = 'www.googleapis.com'
 }

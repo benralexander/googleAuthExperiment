@@ -109,6 +109,15 @@ class SpringSecurityOAuthController {
         }
     }
 
+
+    def twitterLogin(){
+    JSONObject authorizationObject =      googleRestService.generateTwitterAuthenticationString()
+        String  bearer =  authorizationObject ["bearer"]
+        String  accessToken =  authorizationObject ["access_token"]
+        JSONObject searchResults = googleRestService.executeTwitterRequest(accessToken, "q=hello")
+        println "searchResults=${searchResults}"
+    }
+
     /**
      * Associates an OAuthID with an existing account. Needs the user's password to ensure
      * that the user owns that account, and authenticates to verify before linking.
@@ -265,6 +274,10 @@ class SpringSecurityOAuthController {
 
         return oAuthToken
     }
+
+
+
+
 
 /*
     private def updateUser(User user, OAuthToken oAuthToken) {
