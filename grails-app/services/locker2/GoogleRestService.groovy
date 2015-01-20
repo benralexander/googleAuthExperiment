@@ -258,7 +258,7 @@ time required=${(afterCall.time-beforeCall.time)/1000} seconds
         RestBuilder rest = new grails.plugins.rest.client.RestBuilder()
         MultiValueMap<String, String> form = new LinkedMultiValueMap<String, String>()
         StringBuilder logStatus = new StringBuilder()
-        String codedAccessToken  =  accessToken//accessToken.bytes.encodeBase64().toString()
+        String codedAccessToken  =  accessToken
         try {
             response  = rest.get(targetUrl+ "?"+queryText)   {
                 contentType "application/x-www-form-urlencoded"
@@ -320,7 +320,7 @@ time required=${(afterCall.time-beforeCall.time)/1000} seconds
  }
 
 
-    public String executeTwitterRequest (String accessToken,String queryText) {
+    public JSONObject executeTwitterRequest (String accessToken,String queryText) {
 //        int authSeconds = (int)(new Date().getTime()/1000);
 //        int nonce = (int)(new Date().getTime()/10);
         JSONObject response = searchTwitter("https://api.twitter.com/1.1/search/tweets.json", accessToken, queryText)

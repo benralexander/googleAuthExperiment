@@ -114,8 +114,12 @@ class SpringSecurityOAuthController {
     JSONObject authorizationObject =      googleRestService.generateTwitterAuthenticationString()
         String  bearer =  authorizationObject ["bearer"]
         String  accessToken =  authorizationObject ["access_token"]
-        JSONObject searchResults = googleRestService.executeTwitterRequest(accessToken, "q=hello")
-        println "searchResults=${searchResults}"
+        JSONObject searchResults = googleRestService.executeTwitterRequest(accessToken, "q=${params.a}&lang=en&count=100")
+        render(status:200, contentType:"application/json") {
+            [searchResults:searchResults]
+        }
+
+        //println "searchResults=${searchResults}"
     }
 
     /**

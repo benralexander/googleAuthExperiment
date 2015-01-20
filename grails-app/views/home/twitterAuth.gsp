@@ -16,25 +16,33 @@
 <body>
 <hi>hello</hi>
 <script>
-    function success(data){
-        var obj = JSON.parse(data);
-        console.log('hi, '+obj["displayName"]+'.');
-    }
-    $.ajax({
-        cache: false,
-        type: "post",
-        url: "${createLink(controller:'SpringSecurityOAuth',action:'twitterLogin')}",
-        data: {a: 'a'},
-        async: true,
-        success: function (data) {
-            success ( data   );
-        },
-        error: function (jqXHR, exception) {
-            console.log('error!');
-        }
-    });</script>
 
-<button onclick="launchLogin">Twitter</button>
+    var searchTwitter = function(text) {
+        var success = function (data){
+            var obj = JSON.parse(data);
+            console.log('hi, '+obj["displayName"]+'.');
+        };
+        var inputFieldText = $('#searchterms').val();
+        // let's go query twitter
+        $.ajax({
+            cache: false,
+            type: "post",
+            url: "${createLink(controller:'SpringSecurityOAuth',action:'twitterLogin')}",
+            data: {a: inputFieldText},
+            async: true,
+            success: function (data) {
+                success ( data   );
+            },
+            error: function (jqXHR, exception) {
+                console.log('error!');
+            }
+        });
+
+    };
+</script>
+
+<button onclick="searchTwitter()">search twitter</button>
+<span>search terms<input type="text" name="tosearch" id='searchterms' maxlength="25"/></span><br>
 
 </body>
 </html>
