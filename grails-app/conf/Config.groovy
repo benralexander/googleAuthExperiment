@@ -1,17 +1,62 @@
-// locations to search for config files that get merged into the main config;
-// config files can be ConfigSlurper scripts, Java properties files, or classes
-// in the classpath in ConfigSlurper format
+import grails.util.Environment
 
-// grails.config.locations = [ "classpath:${appName}-config.properties",
-//                             "classpath:${appName}-config.groovy",
-//                             "file:${userHome}/.grails/${appName}-config.properties",
-//                             "file:${userHome}/.grails/${appName}-config.groovy"]
+if  (Environment.current == Environment.DEVELOPMENT)  {
+    println('\n\n*** Preparing DEV environment ***\n\n')
+} else if  (Environment.current == Environment.TEST)  {
+    println('\n\n*** Preparing TEST environment ***\n\n')
+}   else if  (Environment.current == Environment.PRODUCTION)  {
+    println('\n\n*** Preparing PROD environment ***\n\n')
+}  else {
+    println("\n\n*** Preparing ${Environment.current} environment ***\n\n")
+}
 
-// if (System.properties["${appName}.config.location"]) {
-//    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
-// }
 
-//def appName = "${appName}"
+/**
+ * Loads external config files from the .grails subfolder in the user's home directory
+ * Home directory in Windows is usually: C:\Users\<username>\.grails
+ * In Unix, this is usually ~\.grails
+ *
+ * dataExport-commons-config.groovy is used to holed generic, non envrironment-specific configurations such as external api credentials, etc.
+ */
+if (appName) {
+    grails.config.locations = []
+
+    // If the developer specifies a directory for the external config files at the command line, use it.
+    // This will look like 'grails -DprimaryConfigDir=[directory name] [target]'
+    // Otherwise, look for these files in the user's home .grails/projectdb directory
+    // If there are no external config files in either location, don't override anything in this Config.groovy
+    String primaryOverrideDirName = System.properties.get('overrideConfigDir')
+    String secondaryOverrideDirName = "${userHome}/.grails/${appName}"
+
+    println (">>>>>>>>>>>Note to developers: config files may be placed in the directory  = ${secondaryOverrideDirName}")
+    println (">>>>>>>>>>>Alternatively, specify the directory you are drawing from with the grails option -DoverrideConfigDir=myDirectoryWhichMightBeNamedWhateverIWant")
+
+
+    List<String> fileNames = ["${appName}-commons-config.groovy", "${appName}-${Environment.current.name}-config.groovy"]
+    fileNames.each { fileName ->
+        String primaryFullName = "${primaryOverrideDirName}/${fileName}"
+        String secondaryFullName = "${secondaryOverrideDirName}/${fileName}"
+
+        if (new File(primaryFullName).exists()) {
+            println "Overriding Config.groovy with $primaryFullName"
+            grails.config.locations << "file:$primaryFullName"
+        } else if (new File(secondaryFullName).exists()) {
+            println "Overriding Config.groovy with $secondaryFullName"
+            grails.config.locations << "file:$secondaryFullName"
+        }
+    }
+}
+
+if (grails.config.locations.isEmpty()){
+    println "\n** No config override  in effect **"
+} else {
+    println "\n** !! config override is in effect !! **"
+    for (location in grails.config.locations )   {
+        println "!!!!! ${location} !! **"
+    }
+}
+
+
 def catalinaBase = System.properties.getProperty('catalina.base')
 if (!catalinaBase) catalinaBase = '.'   // just in case
 def logDirectory = "${catalinaBase}/logs"
@@ -133,6 +178,46 @@ log4j = {  root ->
             'net.sf.ehcache.hibernate'
     info 'grails.app'
     root.level = org.apache.log4j.Level.INFO
+
+
+    environments {
+        development {
+            appenders {
+                console name: 'stdout', layout: pattern(conversionPattern: "%d [%t] %-5p %c %x - %m%n")
+            }
+        }
+
+        staging {
+            appenders {
+                rollingFile name: 'stdout', file: "${logDirectory}/${appName}.log".toString(), maxFileSize: '10MB'
+                rollingFile name: 'stacktrace', file: "${logDirectory}/${appName}_stack.log".toString(), maxFileSize: '10MB'
+                //console name: 'stdout', layout: pattern(conversionPattern: "%d [%t] %-5p %c %x - %m%n")
+            }
+
+            // DO STUFF RELATED TO STAGING ENV
+        }
+
+
+        prod {
+            appenders {
+                rollingFile name: 'stdout', file: "${logDirectory}/${appName}.log".toString(), maxFileSize: '10MB'
+                rollingFile name: 'stacktrace', file: "${logDirectory}/${appName}_stack.log".toString(), maxFileSize: '10MB'
+                //console name: 'stdout', layout: pattern(conversionPattern: "%d [%t] %-5p %c %x - %m%n")
+            }
+            grails.logging.jul.usebridge = false
+            // DO STUFF RELATED TO STAGING ENV
+        }
+
+
+        dbdiff {
+            appenders {
+                console name: 'stdout', layout: pattern(conversionPattern: "%d [%t] %-5p %c %x - %m%n")
+            }
+
+            // DO STUFF RELATED TO DBDIFF ENV
+        }
+    }
+
 }
 
 oauth {
@@ -142,7 +227,6 @@ oauth {
         google {
             api = org.grails.plugin.springsecurity.oauth.GoogleApi20
             key = '975413760331-d2nr5vq7sbbppjfog0cp9j4agesbeovt.apps.googleusercontent.com'
-            secret = 'HKIxi3AOLAgyFV6lDJQCfEgY'
             successUri = "${baseURL}/springSecurityOAuth/onSuccess"
             failureUri = '/oauth/google/error'
             callback = "${baseURL}/springSecurityOAuth/codeExchange?provider=google"
@@ -157,7 +241,6 @@ auth {
 
         twitter {
             key = 'mAbvjXZycxMSBCXQUYttdFm5L'
-            secret = 'l3dJBs3w9QraAuivcfaqdjVGkJ4cxQSMMNNkZ6v9bwz8nXBCXQ'
             callback = "${baseURL}/springSecurityOAuth/oauthInit"
         }
 

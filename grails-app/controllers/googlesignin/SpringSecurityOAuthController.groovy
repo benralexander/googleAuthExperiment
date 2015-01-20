@@ -176,9 +176,22 @@ class SpringSecurityOAuthController {
 
        String identifier = jsonObject.emails['value']
 
+       // break out the fields we want
+       String email = jsonObject.emails['value'][0]
+       String ID = jsonObject["id"]
+       String domain = jsonObject["domain"]
+       String language = jsonObject["language"]
+       String displayName = jsonObject["displayName"]
+       String objectType = jsonObject["objectType"]
+
        springManipService.forceLogin(identifier,session)
 
-       render (view: 'hello')
+       render (view: 'hello', model:[email: email,
+       ID: ID,
+       domain: domain,
+       language: language,
+       displayName:displayName,
+       objectType:objectType])
    }
 
 
