@@ -20,7 +20,7 @@
 
     var searchTwitter = function(text) {
         var success = function (data){
-            var domPtr = $('#messageHolder')
+            var domPtr = $('#messageHolder');
             var obj = JSON.parse(data);
             for ( var i = 0 ; i < obj["searchResults"].statuses.length ; i++ ){
                 var individualObject= obj["searchResults"].statuses[i];

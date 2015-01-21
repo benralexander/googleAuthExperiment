@@ -227,6 +227,7 @@ oauth {
         google {
             api = org.grails.plugin.springsecurity.oauth.GoogleApi20
             key = '975413760331-d2nr5vq7sbbppjfog0cp9j4agesbeovt.apps.googleusercontent.com'
+
             successUri = "${baseURL}/springSecurityOAuth/onSuccess"
             failureUri = '/oauth/google/error'
             callback = "${baseURL}/springSecurityOAuth/codeExchange?provider=google"
@@ -241,6 +242,7 @@ auth {
 
         twitter {
             key = 'mAbvjXZycxMSBCXQUYttdFm5L'
+            secret = 'l3dJBs3w9QraAuivcfaqdjVGkJ4cxQSMMNNkZ6v9bwz8nXBCXQ'
             callback = "${baseURL}/springSecurityOAuth/oauthInit"
         }
 
