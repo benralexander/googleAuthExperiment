@@ -8,10 +8,19 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title></title>
+    <title>Google authentication demo</title>
 </head>
 
 <body>
-Hi
+<h1>authentication successful</h1>
+Why hello there ${displayName}. I believe that I have the following insights into your character:
+<dl>
+    <dt>your email</dt><dd>${email}</dd>
+    <dt>Google ID</dt><dd>${ID}</dd>
+    <dt>domain</dt><dd>${domain}</dd>
+    <dt>language</dt><dd>${language}</dd>
+    <dt>displayName</dt><dd>${displayName}</dd>
+    <dt>objectType</dt><dd>${objectType}</dd>
+</dl>
 </body>
 </html>

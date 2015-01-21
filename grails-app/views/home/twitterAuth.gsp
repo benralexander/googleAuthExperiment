@@ -15,12 +15,17 @@
 
 <body>
 <hi>hello</hi>
+<ol id="messageHolder"></ol>
 <script>
 
     var searchTwitter = function(text) {
         var success = function (data){
+            var domPtr = $('#messageHolder');
             var obj = JSON.parse(data);
-            console.log('hi, '+obj["displayName"]+'.');
+            for ( var i = 0 ; i < obj["searchResults"].statuses.length ; i++ ){
+                var individualObject= obj["searchResults"].statuses[i];
+                domPtr.append('<li>'+individualObject.text+'</li>');
+            }
         };
         var inputFieldText = $('#searchterms').val();
         // let's go query twitter

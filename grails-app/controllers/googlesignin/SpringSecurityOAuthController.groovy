@@ -116,7 +116,7 @@ class SpringSecurityOAuthController {
         String  accessToken =  authorizationObject ["access_token"]
         JSONObject searchResults = googleRestService.executeTwitterRequest(accessToken, "q=${params.a}&lang=en&count=100")
         render(status:200, contentType:"application/json") {
-            [searchResults:searchResults]
+                [searchResults:searchResults]
         }
 
         //println "searchResults=${searchResults}"
@@ -176,9 +176,22 @@ class SpringSecurityOAuthController {
 
        String identifier = jsonObject.emails['value']
 
+       // break out the fields we want
+       String email = jsonObject.emails['value'][0]
+       String ID = jsonObject["id"]
+       String domain = jsonObject["domain"]
+       String language = jsonObject["language"]
+       String displayName = jsonObject["displayName"]
+       String objectType = jsonObject["objectType"]
+
        springManipService.forceLogin(identifier,session)
 
-       render (view: 'hello')
+       render (view: 'hello', model:[email: email,
+       ID: ID,
+       domain: domain,
+       language: language,
+       displayName:displayName,
+       objectType:objectType])
    }
 
 
